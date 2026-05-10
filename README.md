@@ -1,6 +1,6 @@
-# Basic Web Dev Arena Template
+# Ephemeral - Time-Limited Stories
 
-A single-file HTML template for building interactive web applications using vanilla HTML, CSS, and JavaScript.
+A single-file HTML application demonstrating a beautifully designed, interactive interface for time-limited stories using vanilla HTML, Tailwind CSS, and JavaScript.
 
 ## Requirements
 
