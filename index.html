@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ephemeral - Time-Limited Stories</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0907'/%3E%3Crect x='7' y='7' width='18' height='18' rx='5' fill='none' stroke='%23c8a96e' stroke-width='1.5'/%3E%3Crect x='13' y='13' width='6' height='6' rx='1.5' fill='%23c8a96e'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <script>
+      (function () {
+          var orig = console.warn;
+          console.warn = function () {
+              var msg = Array.prototype.map.call(arguments, String).join(' ');
+              if (msg.indexOf('cdn.tailwindcss.com') !== -1 && msg.indexOf('production') !== -1) return;
+              orig.apply(console, arguments);
+          };
+      })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: '#0a0907',
+                        parchment: '#f0ead8',
+                        gold: '#c8a96e',
+                        muted: '#a09880',
+                        dim: '#5a5444',
+                        surface: '#191710',
+                        card: '#211f15',
+                        danger: '#c04038',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'pulse-slow': {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.7 },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --theme-bg: #0a0907;
+            --theme-surface: #191710;
+            --theme-text: #f0ead8;
+            --theme-muted: #a09880;
+            --theme-dim: #5a5444;
+            --theme-accent: #c8a96e;
+            --theme-border: rgba(200, 169, 110, 0.08);
+            --theme-border-strong: rgba(200, 169, 110, 0.15);
+            --theme-danger: #c04038;
+        }
+
+        body {
+            background-color: var(--theme-bg);
+            color: var(--theme-text);
+            transition: background-color 0.6s ease, color 0.6s ease;
+        }
+
+        .theme-surface {
+            background-color: var(--theme-surface);
+            border-color: var(--theme-border);
+        }
+
+        .theme-accent {
+            color: var(--theme-accent);
+        }
+
+        .theme-accent-bg {
+            background-color: var(--theme-accent);
+            color: #0a0907;
+        }
+
+        .theme-muted {
+            color: var(--theme-muted);
+        }
+
+        .hero-section-bg {
+            background-color: var(--theme-bg);
+            background-image:
+                radial-gradient(ellipse 1150px 320px at 70% 20%, rgba(200, 169, 110, 0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 580px 260px at 10% 80%, rgba(192, 64, 56, 0.05) 0%, transparent 60%),
+                linear-gradient(90deg, rgba(200, 169, 110, 0.08) 0%, rgba(200, 169, 110, 0) 1.25%),
+                linear-gradient(180deg, rgba(200, 169, 110, 0.08) 0%, rgba(200, 169, 110, 0) 1.25%);
+        }
+
+        .border-figma {
+            border-color: var(--theme-border);
+        }
+
+        .marquee-track {
+            animation: marquee 32s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .marquee-track {
+                animation: none;
+            }
+        }
+
+        .countdown-pulse {
+            animation: pulse-slow 2s ease-in-out infinite;
+        }
+
+        .post-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .editor-content:empty:before {
+            content: attr(placeholder);
+            color: var(--theme-muted);
+            font-style: italic;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+ @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+ background: var(--theme-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--theme-border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--theme-muted);
+        }
+
+        input, textarea {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--theme-accent);
+        }
+
+        input:focus-visible, textarea:focus-visible {
+            outline: 1px solid var(--theme-accent);
+            outline-offset: 2px;
+        }
+
+        .tab-active {
+            border-bottom: 1px solid var(--theme-accent);
+            color: var(--theme-accent);
+        }
+
+        .tab-inactive {
+            border-bottom: 1px solid transparent;
+            color: var(--theme-dim);
+        }
+
+        .tab-inactive:hover {
+            color: var(--theme-text);
+        }
+
+        .focus-ring:focus-visible {
+            outline: 1px solid var(--theme-accent);
+            outline-offset: 2px;
+        }
+
+        .tab-active-mobile {
+            border-bottom: 2px solid var(--theme-accent);
+            color: var(--theme-accent);
+        }
+
+        .tab-inactive-mobile {
+            border-bottom: 2px solid transparent;
+            color: var(--theme-dim);
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .excerpt-mobile {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-lead::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .write-shell input.write-title-input,
+        .write-shell textarea.write-body-input {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .write-shell input.write-title-input:focus,
+        .write-shell textarea.write-body-input:focus {
+            outline: none !important;
+        }
+
+        .write-shell input.write-title-input:focus-visible,
+        .write-shell textarea.write-body-input:focus-visible {
+            outline: none !important;
+        }
+
+        .write-gradient-bg {
+            background-image:
+                linear-gradient(90deg, rgba(200, 169, 110, 0.03) 1.25%, rgba(200, 169, 110, 0) 1.25%),
+                linear-gradient(180deg, rgba(200, 169, 110, 0.03) 1.25%, rgba(200, 169, 110, 0) 1.25%);
+        }
+
+        .toast-item {
+            opacity: 0;
+            transform: translateY(14px) scale(0.98);
+            transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1), transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .toast-item.toast-item-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .toast-item.toast-item-out {
+            opacity: 0;
+            transform: translateY(8px) scale(0.98);
+        }
+ </style>
+</head>
+<body class="font-sans min-h-screen bg-[#0a0907] text-[#f0ead8] antialiased">
+    <div id="app"></div>
+    <div id="toast-root" class="fixed inset-x-0 bottom-0 z-[60] flex flex-col items-stretch gap-3 px-4 sm:items-end sm:px-6 pointer-events-none pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))]" aria-live="polite"></div>
+
+    <script>
+        const weeklyThemes = [
+            {
+                id: 1,
+                name: "Midnight Confessions",
+                color: "#c8a96e",
+                icon: "moon",
+                season: "Winter 2024",
+                writeBlurb:
+                    "Explore impermanence, confession, and the\nthings we only dare say in the dark."
+            },
+            {
+                id: 2,
+                name: "Fragments of Light",
+                color: "#c8a96e",
+                icon: "sun",
+                season: "Winter 2024",
+                writeBlurb: "Light that breaks, scatters, and refuses\nto be held. Write what gleams and fades."
+            },
+            {
+                id: 3,
+                name: "Ephemeral Gardens",
+                color: "#c8a96e",
+                icon: "leaf",
+                season: "Spring 2024",
+                writeBlurb: "Growth that wilts on purpose. Stories rooted\nin the season of letting go."
+            },
+            {
+                id: 4,
+                name: "Neon Dreams",
+                color: "#c8a96e",
+                icon: "star",
+                season: "Spring 2024",
+                writeBlurb: "Bright fictions that burn out before dawn.\nHonesty under electric haze."
+            }
+        ];
+
+        const currentTheme = weeklyThemes[0];
+
+        const themeWeekEndsAt = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
+
+        const authors = [
+            { id: 1, name: "Elias Thorne", handle: "@eliast", avatar: "ET" },
+            { id: 2, name: "Mira Solis", handle: "@mirasolis", avatar: "MS" },
+            { id: 3, name: "Juno Vega", handle: "@juno", avatar: "JV" },
+            { id: 4, name: "Caspian Reed", handle: "@caspian", avatar: "CR" }
+        ];
+
+        const pastThemesStats = [
+            { name: "Fragments of Light", count: 128 },
+            { name: "Ephemeral Gardens", count: 94 },
+            { name: "Neon Dreams", count: 61 }
+        ];
+
+        const topAuthorsWeek = [
+            { rank: 1, author: authors[0], score: 436 },
+            { rank: 2, author: authors[2], score: 412 },
+            { rank: 3, author: authors[1], score: 321 },
+            { rank: 4, author: authors[3], score: 245 }
+        ];
+
+        const posts = [
+            {
+                id: 1,
+                title: "The Art of Vanishing",
+                content: "There's something liberating about writing that won't last forever. Like footprints in sand before the tide comes. I've been thinking about permanence lately—how we clutch at digital archives as if they'll outlive us. But what if the beauty is in the transient? In knowing this moment, these words, exist only for those who choose to witness them now.",
+                author: authors[0],
+                createdAt: new Date(Date.now() -2 *60 *60 *1000),
+                expiresAt: new Date(Date.now() + 22 * 60 * 60 * 1000),
+                likes: 247,
+                readingTime: 4,
+                excerpt: "There's something liberating about writing that won't last forever..."
+            },
+            {
+                id: 2,
+                title: "Counting Backwards",
+                content: "My grandmother had a peculiar ritual. Every evening, she'd sit by the window and watch the sun set. Not for the beauty, she said, but for the math. 'Twelve minutes from now,' she'd whisper, 'it will be gone.' She lived her entire life aware of endings. I think that's why her stories felt so urgent, so alive. They knew they were temporary.",
+                author: authors[1],
+ createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
+                expiresAt: new Date(Date.now() + 19 * 60 * 60 * 1000),
+                likes: 189,
+                readingTime: 6,
+                excerpt: "My grandmother had a peculiar ritual. Every evening, she'd sit by the window..."
+            },
+            {
+                id: 3,
+                title: "Digital Ghosts",
+                content: "We leave so much behind. Comments, likes, screenshots of conversations we meant to delete. But here, in this space, nothing lingers. I find that honest. There's no algorithm surfacing my old thoughts. No dredging up who I was five years ago. Just now. Just this.",
+                author: authors[2],
+                createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
+                expiresAt: new Date(Date.now() + 16 * 60 * 60 * 1000),
+                likes: 412,
+                readingTime: 3,
+                excerpt: "We leave so much behind. Comments, likes, screenshots of conversations..."
+            },
+            {
+                id: 4,
+                title: "Tomorrow's Yesterday",
+                content: "I'm writing this knowing it will disappear. Not archived. Not saved. Just words floating into the void after twenty-four hours. It changes how I write. I'm more honest. Less performative. There's no future employer scrolling through these thoughts. No context collapse. Just the truth, briefly illuminated.",
+                author: authors[3],
+                createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
+                expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000),
+                likes: 156,
+                readingTime: 5,
+                excerpt: "I'm writing this knowing it will disappear. Not archived. Not saved..."
+            },
+            {
+                id: 5,
+                title: "The Weight of Forever",
+                content: "Social media taught us to perform eternity. Every post, a monument. Every photo, a memorial. But monuments decay. They just do it slowly enough that we pretend otherwise. Here, the decay is the point. The clock ticking down is not a threat. It's a promise that this moment matters precisely because it won't last.",
+                author: authors[0],
+                createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000),
+                expiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000),
+                likes: 89,
+                readingTime: 4,
+                excerpt: "Social media taught us to perform eternity. Every post, a monument..."
+            }
+        ];
+
+        let currentView = 'home';
+        let selectedPost = null;
+        let filter = 'all';
+        let searchQuery = '';
+        let likedPosts = new Set();
+        let newPost = { title: '', content: '', duration: 24 };
+
+        const STORAGE_KEY = 'ephemeral.app.v1';
+
+        function persistState() {
+            try {
+                const payload = {
+                    posts: posts.map((p) => ({
+                        ...p,
+                        createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : p.createdAt,
+                        expiresAt: p.expiresAt instanceof Date ? p.expiresAt.toISOString() : p.expiresAt
+                    })),
+                    likedPostIds: Array.from(likedPosts),
+                    newPost: { ...newPost },
+                    filter,
+                    searchQuery,
+                    currentView,
+                    selectedPostId: selectedPost ? selectedPost.id : null
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                console.warn('Ephemeral: could not save state', e);
+            }
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (!data || !Array.isArray(data.posts)) return;
+                posts.length = 0;
+                data.posts.forEach((p) => {
+                    posts.push({
+                        ...p,
+                        createdAt: new Date(p.createdAt),
+                        expiresAt: new Date(p.expiresAt)
+                    });
+                });
+                if (Array.isArray(data.likedPostIds)) {
+                    likedPosts = new Set(data.likedPostIds);
+                }
+                if (data.newPost && typeof data.newPost === 'object') {
+                    newPost = {
+                        title: String(data.newPost.title ?? ''),
+                        content: String(data.newPost.content ?? ''),
+                        duration: typeof data.newPost.duration === 'number' ? data.newPost.duration : 24
+                    };
+                }
+                if (typeof data.filter === 'string') filter = data.filter;
+                if (typeof data.searchQuery === 'string') searchQuery = data.searchQuery;
+                if (['home', 'post', 'write', 'profile'].includes(data.currentView)) {
+                    currentView = data.currentView;
+                } else {
+                    currentView = 'home';
+                }
+                selectedPost = null;
+                if (data.currentView === 'post' && data.selectedPostId != null) {
+                    const found = posts.find((p) => p.id === data.selectedPostId);
+                    if (found) {
+                        selectedPost = found;
+                    } else {
+                        currentView = 'home';
+                    }
+                }
+            } catch (e) {
+                console.warn('Ephemeral: could not load state', e);
+            }
+        }
+
+        loadState();
+
+        function formatTimeRemaining(endDate) {
+            const now = new Date();
+            const diff = endDate - now;
+            
+            if (diff <= 0) return 'Expired';
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+ const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            if (hours > 0) return `${hours}h ${minutes}m remaining`;
+            return `${minutes}m remaining`;
+        }
+
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            
+            if (hours < 1) return 'Just now';
+            if (hours === 1) return '1 hour ago';
+            if (hours < 24) return `${hours} hours ago`;
+            return `${Math.floor(hours / 24)} days ago`;
+        }
+
+        function formatTimeCompact(endDate) {
+            const now = new Date();
+            const diff = endDate - now;
+            if (diff <= 0) return "0h 0m";
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            return `${hours}h ${String(minutes).padStart(2, "0")}m`;
+        }
+
+        function formatThemeCountdown(endDate) {
+            const now = new Date();
+            let diff = endDate - now;
+            if (diff <= 0) diff = 0;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            diff -= days * 24 * 60 * 60 * 1000;
+            const hrs = Math.floor(diff / (1000 * 60 * 60));
+            diff -= hrs * 60 * 60 * 1000;
+            const min = Math.floor(diff / (1000 * 60));
+            return {
+                days: String(days).padStart(2, "0"),
+                hrs: String(hrs).padStart(2, "0"),
+                min: String(min).padStart(2, "0")
+            };
+        }
+
+        function formatHoursRemainingShort(endDate) {
+            const diff = endDate - Date.now();
+            if (diff <= 0) return "0h";
+            return `${Math.floor(diff / (1000 * 60 * 60))}h`;
+        }
+
+        function splitTitleTwoLines(title) {
+            const words = title.trim().split(/\s+/);
+            if (words.length <= 1) return { line1: title, line2: "" };
+            const mid = Math.ceil(words.length / 2);
+            return {
+                line1: words.slice(0, mid).join(" "),
+                line2: words.slice(mid).join(" ")
+            };
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function showToast(message, tone = "accent") {
+            const root = document.getElementById("toast-root");
+            if (!root) return;
+            const accent = tone === "accent";
+            const iconBg = accent
+                ? "bg-[rgba(200,169,110,0.16)] border-[rgba(200,169,110,0.45)]"
+                : "bg-[rgba(90,84,68,0.35)] border-[rgba(200,169,110,0.12)]";
+            const iconFg = accent ? "text-[#c8a96e]" : "text-[#a09880]";
+            const checkSvg = `<svg class="h-5 w-5 ${iconFg}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+            const dashSvg = `<svg class="h-5 w-5 ${iconFg}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" d="M6 12h12"/></svg>`;
+            const iconInner = accent ? checkSvg : dashSvg;
+
+            const el = document.createElement("div");
+            el.className = [
+                "toast-item pointer-events-auto w-full sm:w-auto sm:min-w-[300px] sm:max-w-[min(100vw-3rem,24rem)]",
+                "rounded-xl border border-[rgba(200,169,110,0.28)]",
+                "bg-gradient-to-br from-[#1e1c16] via-[#15130f] to-[#0e0c09]",
+                "px-4 py-4 sm:px-5 sm:py-4",
+                "shadow-[0_16px_48px_rgba(0,0,0,0.55),0_0_0_1px_rgba(200,169,110,0.08),inset_0_1px_0_rgba(255,255,255,0.04)]"
+            ].join(" ");
+            el.setAttribute("role", "status");
+            el.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border ${iconBg} shadow-inner">${iconInner}</div>
+                    <div class="min-w-0 flex-1 pt-0.5">
+                        <p class="font-sans text-[9px] font-medium uppercase tracking-[1.8px] text-[#c8a96e]">Ephemeral</p>
+                        <p class="mt-1.5 font-sans text-[15px] font-medium leading-snug tracking-[0.01em] text-[#f0ead8] sm:text-[16px]">${escapeHtml(message)}</p>
+                    </div>
+                </div>
+            `;
+            root.appendChild(el);
+            requestAnimationFrame(() => el.classList.add("toast-item-visible"));
+            setTimeout(() => {
+                el.classList.add("toast-item-out");
+                setTimeout(() => el.remove(), 260);
+            }, 3200);
+        }
+
+        function renderPostBodyWithDropCap(content, variant = "desktop") {
+            const isMobile = variant === "mobile";
+            const bodyCls = isMobile
+                ? "font-sans text-[15px] leading-[29.4px] tracking-[0.28px] text-[#a09880] text-justify"
+                : "font-sans text-[18px] leading-[31.5px] text-[#a09880] text-justify";
+            const dropCapCls = isMobile
+                ? "float-left font-serif font-bold text-[64px] leading-[0.85] text-[#a09880] mr-2 mt-0.5 select-none"
+                : "float-left font-serif font-bold text-[64px] leading-[0.85] text-[#a09880] mr-3 mt-1 select-none";
+            const paraGap = isMobile ? "mt-9" : "mt-6";
+            const blocks = content.trim().split(/\n\s*\n/).filter(Boolean);
+            if (blocks.length === 0) return "";
+            return blocks
+                .map((block, i) => {
+                    const text = escapeHtml(block.replace(/\n/g, " ").trim());
+                    if (i === 0 && text.length > 0) {
+                        const first = text[0];
+                        const rest = text.slice(1);
+                        return `<p class="post-lead ${bodyCls}">
+                            <span class="${dropCapCls}" aria-hidden="true">${first}</span>${rest}
+                        </p>`;
+                    }
+                    return `<p class="${bodyCls} ${i > 0 ? paraGap : ""}">${text}</p>`;
+                })
+                .join("");
+        }
+
+        function truncateExcerpt(text, maxLen) {
+            if (text.length <= maxLen) return text;
+            return text.slice(0, maxLen).trim() + "…";
+        }
+
+        function setTheme(theme) {
+            document.documentElement.style.setProperty('--theme-accent', theme.color);
+        }
+
+        function navigate(view) {
+            currentView = view;
+            if (view !== 'post') selectedPost = null;
+            persistState();
+            render();
+        }
+
+        function goTrending() {
+            filter = "trending";
+            currentView = "home";
+            selectedPost = null;
+            persistState();
+            render();
+        }
+
+        function goExpiring() {
+            filter = "expiring";
+            currentView = "home";
+            selectedPost = null;
+            persistState();
+            render();
+        }
+
+        function selectPost(post) {
+            selectedPost = post;
+            navigate('post');
+        }
+
+        function likePost(postId, e) {
+            e.stopPropagation();
+            let msg;
+            if (likedPosts.has(postId)) {
+                likedPosts.delete(postId);
+                msg = "Removed appreciation";
+            } else {
+                likedPosts.add(postId);
+                msg = "Appreciation sent";
+            }
+            persistState();
+            render();
+            showToast(msg, likedPosts.has(postId) ? "accent" : "muted");
+        }
+
+        function publishPost() {
+            if (!newPost.title.trim() || !newPost.content.trim()) return;
+            
+            const post = {
+                id: Date.now(),
+                title: newPost.title,
+                content: newPost.content,
+                author: authors[0],
+                createdAt: new Date(),
+                expiresAt: new Date(Date.now() + newPost.duration * 60 * 60 * 1000),
+                likes: 0,
+                readingTime: Math.ceil(newPost.content.split(' ').length / 200),
+                excerpt: newPost.content.slice(0, 150) + '...'
+            };
+            
+            posts.unshift(post);
+            newPost = { title: '', content: '', duration: 24 };
+            showToast("Story published");
+            navigate('home');
+        }
+
+        function Header() {
+            return `
+                <header class="fixed top-0 left-0 right-0 z-50 border-b border-figma bg-[rgba(10,9,7,0.95)] backdrop-blur-[8px] lg:bg-[rgba(10,9,7,0.92)] pt-[env(safe-area-inset-top,0px)]" style="border-color: var(--theme-border);">
+                    <div class="${currentView === "write" ? "hidden" : "flex"} lg:hidden h-[52px] items-center justify-between px-5">
+                        <button type="button" onclick="navigate('home')" class="focus-ring flex items-center gap-2 text-left min-w-0">
+                            <span class="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-[10px] border border-[#c8a96e]">
+                                <span class="h-[5px] w-[5px] rounded-[2.5px] bg-[#c8a96e]" aria-hidden="true"></span>
+                            </span>
+                            <span class="font-serif text-[17px] tracking-[0.85px] text-[#f0ead8]">Ephemeral</span>
+                        </button>
+                        <button type="button" onclick="navigate('profile')" class="focus-ring flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[15px] border border-[rgba(200,169,110,0.15)] bg-[#201e14] font-sans text-[9px] text-[#c8a96e]" aria-label="Profile">${authors[0].avatar}</button>
+                    </div>
+                    <div class="hidden lg:flex h-14 items-center justify-between px-10">
+                        <button type="button" onclick="navigate('home')" class="focus-ring flex items-center gap-3 text-left min-w-0">
+                            <span class="relative flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[11px] border border-[#c8a96e]">
+                                <span class="h-[6px] w-[6px] rounded-[3px] bg-[#c8a96e]" aria-hidden="true"></span>
+                            </span>
+                            <span class="flex flex-row items-baseline gap-3 min-w-0">
+                                <span class="font-serif text-[18px] leading-[30.6px] tracking-[1.08px] text-[#f0ead8] shrink-0">Ephemeral</span>
+                                <span class="font-sans text-[9px] uppercase tracking-[1.8px] text-[#5a5444] whitespace-nowrap">Time-limited stories</span>
+                            </span>
+                        </button>
+                        <nav class="flex items-center gap-7" aria-label="Primary">
+                            <button type="button" onclick="goTrending()" class="focus-ring font-sans text-[10px] uppercase tracking-[1.8px] text-[#5a5444] hover:text-[#f0ead8] transition-colors py-2">Trending</button>
+                            <button type="button" onclick="goExpiring()" class="focus-ring font-sans text-[10px] uppercase tracking-[1.8px] text-[#5a5444] hover:text-[#f0ead8] transition-colors py-2">Expiring</button>
+                            <button type="button" onclick="navigate('write')" class="focus-ring font-sans text-[10px] uppercase tracking-[1.8px] text-[#c8a96e] border border-[rgba(200,169,110,0.25)] px-5 py-2 hover:bg-[rgba(200,169,110,0.08)] transition-colors">Write a Story</button>
+                            <button type="button" onclick="navigate('profile')" class="focus-ring flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[15px] border border-[rgba(200,169,110,0.15)] bg-[#211f15] font-sans text-[10px] text-[#c8a96e]" aria-label="Profile">${authors[0].avatar}</button>
+                        </nav>
+                    </div>
+                </header>
+            `;
+        }
+
+        function HeroSection() {
+            const daysUntilExpiry = Math.max(0, Math.ceil((themeWeekEndsAt - Date.now()) / (24 * 60 * 60 * 1000)));
+            const titleParts = currentTheme.name.split(" ");
+            const line1 = titleParts[0] || "";
+            const line2 = titleParts.slice(1).join(" ");
+            return `
+                <section class="relative hero-section-bg border-b border-figma min-h-[280px] sm:min-h-[320px] overflow-hidden" style="border-color: var(--theme-border);">
+                    <div class="relative max-w-[1440px] mx-auto px-6 sm:px-12 lg:px-[100px] pt-10 pb-12 sm:pb-[49px]">
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center gap-5">
+                                <span class="font-sans text-[9px] uppercase tracking-[1.98px] text-[#c8a96e] leading-[15.3px]">${currentTheme.season}</span>
+                                <span class="h-px w-10 bg-[rgba(200,169,110,0.25)]" aria-hidden="true"></span>
+                                <span class="font-sans text-[9px] uppercase tracking-[1.98px] text-[#5a5444] leading-[15.3px]">Week ${currentTheme.id}</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_220px] gap-8 lg:gap-12 items-end">
+                                <div class="flex flex-col gap-[15px] max-w-[460px]">
+                                    <h1 class="font-serif text-[48px] sm:text-[56px] lg:text-[72px] leading-none tracking-[-0.72px] text-[#f0ead8]">
+                                        <span class="block leading-[1]">${line1}</span>
+                                        ${line2 ? `<span class="block font-black italic text-[#c8a96e] leading-[1]">${line2}</span>` : ""}
+                                    </h1>
+                                    <p class="font-sans text-[11px] leading-[19.8px] tracking-[0.33px] text-[#a09880] max-w-[460px]">
+                                        <span class="block">This week's theme explores impermanence and the beauty of moments</span>
+                                        <span class="block">that cannot be kept. Share your story before it fades.</span>
+                                    </p>
+                                </div>
+                                <div class="flex flex-col items-start lg:items-end gap-4 w-full lg:w-[220px] lg:ml-auto pb-1">
+                                    <div class="flex flex-col gap-0.5 items-end w-[95px]">
+                                        <span class="font-serif text-[48px] leading-[48px] text-right tracking-[-0.96px] text-[#f0ead8]">${daysUntilExpiry}</span>
+                                        <span class="font-sans text-[8px] uppercase tracking-[1.8px] text-[#5a5444] text-right leading-[15.3px]">Days Remaining</span>
+                                    </div>
+                                    <div class="h-px w-full bg-[rgba(200,169,110,0.15)]" aria-hidden="true"></div>
+                                    <div class="flex flex-col gap-0.5 items-end w-[95px]">
+                                        <span class="font-serif text-[48px] leading-[48px] text-right tracking-[-0.96px] text-[#f0ead8]">${posts.length}</span>
+                                        <span class="font-sans text-[8px] uppercase tracking-[1.8px] text-[#5a5444] text-right leading-[15.3px]">Stories</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function MarqueeStrip() {
+            const items = [
+                ...weeklyThemes.map(t => ({ label: `${t.season} — ${t.name}`, active: t.id === currentTheme.id })),
+                ...weeklyThemes.map(t => ({ label: `${t.season} — ${t.name}`, active: t.id === currentTheme.id }))
+            ];
+            const cells = items.map((item) => `
+                <div class="flex items-center gap-6 px-8 shrink-0">
+                    <span class="size-1 rounded-[2px] bg-[#c8a96e]" aria-hidden="true"></span>
+                    <span class="font-sans text-[9px] uppercase tracking-[1.62px] whitespace-nowrap ${item.active ? "text-[#c8a96e]" : "text-[#5a5444]"}">${item.label}</span>
+                </div>
+            `).join("");
+            return `
+                <div class="relative h-[38px] border-b border-figma overflow-hidden" style="border-color: var(--theme-border);">
+                    <div class="marquee-track flex items-center h-full w-max">
+                        ${cells}
+                        ${cells}
+                    </div>
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-[60px] bg-gradient-to-r from-[#0a0907] to-transparent" aria-hidden="true"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-[60px] bg-gradient-to-l from-[#0a0907] to-transparent" aria-hidden="true"></div>
+                </div>
+            `;
+        }
+
+        function MobileHeroSection() {
+            const daysUntilExpiry = Math.max(0, Math.ceil((themeWeekEndsAt - Date.now()) / (24 * 60 * 60 * 1000)));
+            const titleParts = currentTheme.name.split(" ");
+            const line1 = titleParts[0] || "";
+            const line2 = titleParts.slice(1).join(" ");
+            return `
+                <section class="relative overflow-hidden border-b border-figma bg-[#0a0907] lg:hidden" style="border-color: var(--theme-border);">
+                    <div class="px-7 pt-5">
+                        <div class="inline-flex items-center gap-2 border border-[rgba(200,169,110,0.25)] bg-[rgba(200,169,110,0.12)] px-[11px] py-1.5">
+                            <span class="size-[5px] shrink-0 rounded-[2.5px] bg-[#c8a96e]" aria-hidden="true"></span>
+                            <span class="font-sans text-[8px] uppercase tracking-[1.6px] text-[#c8a96e]">Now live — ${currentTheme.season}</span>
+                        </div>
+                        <div class="mt-4">
+                            <h1 class="font-serif text-[38px] leading-[38px] tracking-[-0.76px] text-[#f0ead8]">
+                                <span class="block">${line1}</span>
+                                ${line2 ? `<span class="block font-black italic text-[#c8a96e]">${line2}</span>` : ""}
+                            </h1>
+                        </div>
+                        <div class="mt-4 flex h-[70px] items-stretch border-t border-b border-figma" style="border-color: var(--theme-border);">
+                            <div class="flex flex-1 flex-col items-center justify-center gap-0.5 border-r border-figma py-3.5" style="border-color: var(--theme-border);">
+                                <span class="font-serif text-[28px] leading-[28px] text-[#f0ead8]">${daysUntilExpiry}</span>
+                                <span class="text-center font-sans text-[7px] uppercase tracking-[1.26px] text-[#5a5444]">Days left</span>
+                            </div>
+                            <div class="flex flex-1 flex-col items-center justify-center gap-0.5 border-r border-figma py-3.5" style="border-color: var(--theme-border);">
+                                <span class="font-serif text-[28px] leading-[28px] text-[#f0ead8]">${posts.length}</span>
+                                <span class="text-center font-sans text-[7px] uppercase tracking-[1.26px] text-[#5a5444]">Stories</span>
+                            </div>
+                            <div class="flex flex-1 flex-col items-center justify-center gap-0.5 py-3.5">
+                                <span class="font-serif text-[28px] leading-[28px] text-[#f0ead8]">48h</span>
+                                <span class="text-center font-sans text-[7px] uppercase tracking-[1.26px] text-[#5a5444]">Max dur.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function MobileSearchFilters() {
+            const tabs = [
+                { id: "all", label: "All" },
+                { id: "trending", label: "Trending" },
+                { id: "recent", label: "New" },
+                { id: "expiring", label: "Expiring Soon" }
+            ];
+            return `
+                <div class="border-b border-figma bg-[#111009] lg:hidden" style="border-color: var(--theme-border);">
+                    <div class="px-6 pb-3 pt-3">
+                        <label class="flex w-full items-center gap-2 border border-[rgba(200,169,110,0.08)] bg-[#181610] pl-2.5 pr-4 py-2.5">
+                            <span class="sr-only">Search stories</span>
+                            <svg class="h-3.5 w-3.5 shrink-0 text-[#5a5444]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+                            <input id="ephemeral-search-mobile" type="search" value="${searchQuery}" oninput="setSearchQuery(this.value)" placeholder="Search stories…" class="focus-ring min-w-0 flex-1 border-0 bg-transparent p-0 font-sans text-[11px] text-[#f0ead8] placeholder:text-[#5a5444] focus:outline-none focus:ring-0" />
+                        </label>
+                    </div>
+                    <div class="scrollbar-hide flex h-9 overflow-x-auto overflow-y-hidden border-t border-figma pl-1" style="border-color: var(--theme-border);">
+                        ${tabs.map((tab) => `
+                            <button type="button" onclick="setFilter('${tab.id}')" class="focus-ring shrink-0 px-4 pb-3 pt-[11px] font-sans text-[9px] uppercase tracking-[1.44px] transition-colors ${filter === tab.id ? "tab-active-mobile" : "tab-inactive-mobile"}">${tab.label}</button>
+                        `).join("")}
+                    </div>
+                </div>
+            `;
+        }
+
+        function MobileThemeCard() {
+            const tc = formatThemeCountdown(themeWeekEndsAt);
+            return `
+                <div class="px-7 py-4 lg:hidden">
+                    <div class="relative min-h-[136px] border border-[rgba(200,169,110,0.15)] bg-[#181610] px-4 pb-4 pt-3.5">
+                        <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c8a96e] to-transparent" aria-hidden="true"></div>
+                        <p class="font-sans text-[7px] uppercase tracking-[1.54px] text-[#5a5444]">This week's theme</p>
+                        <p class="mt-1 font-serif text-[18px] italic text-[#c8a96e]">${currentTheme.name}</p>
+                        <p class="mt-1 font-sans text-[11px] text-[#5a5444]">${posts.length} stories published</p>
+                        <div class="mt-3 flex items-start gap-2 border-t border-figma pt-3" style="border-color: var(--theme-border);">
+                            <div class="flex w-5 flex-col items-start gap-0">
+                                <span class="font-serif text-[20px] leading-[20px] text-[#f0ead8]">${tc.days}</span>
+                                <span class="font-sans text-[7px] uppercase tracking-[0.98px] text-[#5a5444]">Days</span>
+                            </div>
+                            <span class="font-serif text-[18px] leading-none text-[#5a5444] pt-0.5">:</span>
+                            <div class="flex w-[18px] flex-col items-start gap-0">
+                                <span class="font-serif text-[20px] leading-[20px] text-[#f0ead8]">${tc.hrs}</span>
+                                <span class="font-sans text-[7px] uppercase tracking-[0.98px] text-[#5a5444]">Hrs</span>
+                            </div>
+                            <span class="font-serif text-[18px] leading-none text-[#5a5444] pt-0.5">:</span>
+                            <div class="flex w-5 flex-col items-start gap-0">
+                                <span class="font-serif text-[20px] leading-[20px] text-[#f0ead8]">${tc.min}</span>
+                                <span class="font-sans text-[7px] uppercase tracking-[0.98px] text-[#5a5444]">Min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function StoryRowMobile(post, soonestId, isLast) {
+            const isLiked = likedPosts.has(post.id);
+            const timeRemaining = formatTimeCompact(post.expiresAt);
+            const totalMs = Math.max(1, post.expiresAt - post.createdAt);
+            const remainingMs = Math.max(0, post.expiresAt - Date.now());
+            const remainingPct = Math.max(0, Math.min(100, (remainingMs / totalMs) * 100));
+            const isUrgent = post.id === soonestId;
+            const fillColor = isUrgent ? "bg-[#c04038]" : "bg-[#c8a96e]";
+            const timeTextCls = isUrgent ? "text-[#c04038]" : "text-[#5a5444]";
+            const clockCls = isUrgent ? "text-[#c04038]" : "text-[#5a5444]";
+            const rowBorder = isLast ? "" : "border-b border-figma";
+            return `
+                <article class="${rowBorder} lg:hidden" style="border-color: var(--theme-border);">
+                    <div class="cursor-pointer px-6 pb-5 pt-[18px] pl-8 pr-6" onclick="selectPost(posts.find(p => p.id === ${post.id}))">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="flex min-w-0 items-center gap-1.5">
+                                <div class="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[11px] border border-[rgba(200,169,110,0.15)] bg-[#201e14] font-sans text-[7px] text-[#a09880]">${post.author.avatar}</div>
+                                <span class="truncate font-sans text-[11px] text-[#a09880]">${post.author.name}</span>
+                            </div>
+                            <div class="flex shrink-0 items-center gap-1">
+                                <svg class="h-2.5 w-2.5 ${clockCls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                                <span class="whitespace-nowrap font-sans text-[9px] ${timeTextCls}">${timeRemaining}</span>
+                            </div>
+                        </div>
+                        <h2 class="mt-3 font-serif text-[18px] leading-[20.7px] tracking-[-0.18px] text-[#f0ead8]">${post.title}</h2>
+                        <p class="excerpt-mobile mt-2 font-sans text-[12px] leading-[21px] text-[#a09880]">${post.excerpt}</p>
+                        <div class="mt-4 flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <button type="button" onclick="likePost(${post.id}, event)" class="focus-ring pb-0.5 font-sans text-[9px] text-[#5a5444] hover:text-[#c8a96e] ${isLiked ? "!text-[#c8a96e]" : ""}">
+                                    <span class="sr-only">Like</span>
+                                    <span aria-hidden="true">♡ ${post.likes + (isLiked ? 1 : 0)}</span>
+                                </button>
+                                <span class="font-sans text-[9px] text-[#5a5444]">${post.readingTime} min read</span>
+                            </div>
+                            <div class="relative h-[3px] w-[72px] shrink-0 overflow-hidden rounded-[2px] bg-[#181610]" aria-hidden="true">
+                                <div class="absolute left-0 top-0 bottom-0 rounded-[2px] ${fillColor}" style="width: ${remainingPct}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function MobileBottomNav() {
+            const home = currentView === "home";
+            const write = currentView === "write";
+            const profile = currentView === "profile";
+            const trending = home && filter === "trending";
+            const expiring = home && filter === "expiring";
+            const c = (on) => (on ? "#c8a96e" : "#5a5444");
+            const navH = write ? "h-[63px]" : "h-[60px]";
+            return `
+                <nav class="fixed bottom-0 left-0 right-0 z-50 flex ${navH} items-start justify-center border-t border-figma bg-[rgba(10,9,7,0.97)] pt-px pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden" style="border-color: var(--theme-border);" aria-label="Bottom">
+                    <button type="button" onclick="navigate('home')" class="focus-ring flex h-full min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 border-0 bg-transparent pt-1">
+                        <svg class="h-[18px] w-[18px]" style="color: ${c(home)}" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                        <span class="font-sans text-[7px] uppercase tracking-[0.7px]" style="color: ${c(home)}">Home</span>
+                    </button>
+                    <button type="button" onclick="goTrending()" class="focus-ring flex h-full min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 border-0 bg-transparent pt-1">
+                        <svg class="h-[18px] w-[18px]" style="color: ${c(trending)}" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 7l-8.5 8.5-4-4L2 17"/><path d="M16 7h6v6"/></svg>
+                        <span class="font-sans text-[7px] uppercase tracking-[0.7px]" style="color: ${c(trending)}">Trending</span>
+                    </button>
+                    <div class="flex h-full min-h-[44px] flex-1 flex-col items-center justify-start pt-0">
+                        <button type="button" onclick="navigate('write')" class="focus-ring -mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#c8a96e] text-[#0a0907] shadow-lg" aria-label="Write">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        </button>
+                        <span class="mt-2 font-sans text-[8px] font-semibold uppercase tracking-[0.75px] leading-none" style="color: ${c(write)}">Write</span>
+                    </div>
+                    <button type="button" onclick="goExpiring()" class="focus-ring flex h-full min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 border-0 bg-transparent pt-1">
+                        <svg class="h-[18px] w-[18px]" style="color: ${c(expiring)}" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                        <span class="font-sans text-[7px] uppercase tracking-[0.7px]" style="color: ${c(expiring)}">Expiring</span>
+                    </button>
+                    <button type="button" onclick="navigate('profile')" class="focus-ring flex h-full min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 border-0 bg-transparent pt-1" aria-label="Profile">
+                        <svg class="h-[18px] w-[18px]" style="color: ${c(profile)}" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span class="font-sans text-[7px] uppercase tracking-[0.7px]" style="color: ${c(profile)}">Profile</span>
+                    </button>
+                </nav>
+            `;
+        }
+
+        function HomeSidebar() {
+            const tc = formatThemeCountdown(themeWeekEndsAt);
+            return `
+                <aside class="hidden lg:flex lg:w-[321px] lg:shrink-0 flex-col border-t lg:border-t-0 border-figma lg:border-l" style="border-color: var(--theme-border);">
+                    <div class="border-b border-figma px-7 pt-6 pb-6 relative" style="border-color: var(--theme-border);">
+                        <p class="font-sans text-[8px] uppercase tracking-[2px] text-[#5a5444] leading-[13.6px] mb-4">Theme Expires In</p>
+                        <div class="flex items-start gap-4">
+                            <div class="flex flex-col items-center gap-[3px] w-[37px]">
+                                <span class="font-serif text-[36px] leading-[36px] text-[#f0ead8]">${tc.days}</span>
+                                <span class="font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Days</span>
+                            </div>
+                            <span class="font-serif text-[28px] leading-[33.6px] text-[#5a5444] pt-1">:</span>
+                            <div class="flex flex-col items-center gap-[3px] w-11">
+                                <span class="font-serif text-[36px] leading-[36px] text-[#f0ead8]">${tc.hrs}</span>
+                                <span class="font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Hrs</span>
+                            </div>
+                            <span class="font-serif text-[28px] leading-[33.6px] text-[#5a5444] pt-1">:</span>
+                            <div class="flex flex-col items-center gap-[3px] w-11">
+                                <span class="font-serif text-[36px] leading-[36px] text-[#f0ead8]">${tc.min}</span>
+                                <span class="font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Min</span>
+                            </div>
+                        </div>
+                        <p class="mt-6 font-sans text-[10px] leading-[18px] tracking-[0.3px] text-[#a09880]">
+                            <span class="block">When the theme expires, all</span>
+                            <span class="block">stories within it will vanish</span>
+                            <span class="block">permanently. No archives. No</span>
+                            <span class="block">backups.</span>
+                        </p>
+                    </div>
+                    <div class="relative border-b border-figma bg-[#191710] border-x-0 px-[29px] pt-[25px] pb-[26px] flex flex-col gap-2" style="border-color: var(--theme-border);">
+                        <div class="absolute top-0 left-[-1px] right-[-1px] h-px bg-gradient-to-r from-transparent via-[#c8a96e] to-transparent pointer-events-none" aria-hidden="true"></div>
+                        <p class="font-serif italic text-[18px] leading-[30.6px] text-[#f0ead8]">Your story matters.</p>
+                        <p class="font-sans text-[10px] leading-[18px] text-[#a09880] pb-2">
+                            <span class="block">Write something honest.</span>
+                            <span class="block">Something ephemeral. It will</span>
+                            <span class="block">disappear — that's the</span>
+                            <span class="block">point.</span>
+                        </p>
+                        <button type="button" onclick="navigate('write')" class="focus-ring w-full bg-[#c8a96e] text-[#0a0907] font-sans text-[10px] uppercase tracking-[2px] py-3 px-3 hover:brightness-110 transition-[filter]">Begin Writing →</button>
+                    </div>
+                    <div class="border-b border-figma px-7 pt-6 pb-6" style="border-color: var(--theme-border);">
+                        <p class="font-sans text-[8px] uppercase tracking-[2px] text-[#5a5444] leading-[13.6px] mb-4">Past Themes</p>
+                        <div class="flex flex-col">
+                            ${pastThemesStats.map((row) => `
+                                <div class="flex items-center justify-between gap-4 border-b border-figma py-2 last:border-0 last:pb-0" style="border-color: var(--theme-border);">
+                                    <span class="font-sans text-[11px] leading-[18.7px] text-[#a09880]">${row.name}</span>
+                                    <span class="font-sans text-[9px] tracking-[0.72px] text-[#5a5444] whitespace-nowrap">${row.count} stories</span>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
+                    <div class="px-7 pt-6 pb-8 border-b border-figma lg:border-b-0" style="border-color: var(--theme-border);">
+                        <p class="font-sans text-[8px] uppercase tracking-[2px] text-[#5a5444] leading-[13.6px] mb-4">Top Authors This Week</p>
+                        <div class="flex flex-col">
+                            ${topAuthorsWeek.map((row) => `
+                                <div class="flex items-center gap-3 py-2">
+                                    <span class="font-serif italic text-[18px] leading-[30.6px] text-[#5a5444] w-5 text-center">${row.rank}</span>
+                                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl border border-[rgba(200,169,110,0.15)] bg-[#211f15] font-sans text-[10px] text-[#a09880]">${row.author.avatar}</div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-sans text-[11px] leading-[18.7px] text-[#f0ead8] truncate">${row.author.name}</div>
+                                        <div class="font-sans text-[9px] tracking-[0.54px] text-[#5a5444]">${row.author.handle}</div>
+                                    </div>
+                                    <span class="font-sans text-[10px] text-[#c8a96e]">${row.score}</span>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
+                </aside>
+            `;
+        }
+
+        function StoryRow(post, index, _total, soonestId) {
+            const isLiked = likedPosts.has(post.id);
+            const timeRemaining = formatTimeCompact(post.expiresAt);
+            const totalMs = Math.max(1, post.expiresAt - post.createdAt);
+            const remainingMs = Math.max(0, post.expiresAt - Date.now());
+            const remainingPct = Math.max(0, Math.min(100, (remainingMs / totalMs) * 100));
+            const num = String(index + 1).padStart(2, "0");
+            const excerpt = truncateExcerpt(post.excerpt.replace(/…$/, ""), 118);
+            const isUrgent = post.id === soonestId;
+            const heartFill = isLiked ? "currentColor" : "none";
+            const barInner = `
+                        <div class="absolute bottom-0 left-0 right-0 bg-[#c8a96e] z-[1]" style="height: ${remainingPct}%;" aria-hidden="true"></div>
+                        ${isUrgent ? `<div class="absolute bottom-0 left-0 right-0 top-3/4 bg-[#c04038] z-[2] pointer-events-none" aria-hidden="true"></div>` : ""}`;
+            return `
+                <article class="hidden lg:grid grid-cols-[56px_minmax(0,1fr)] border-b border-figma min-h-[168px]" style="border-color: var(--theme-border);">
+                    <div class="border-r border-figma flex flex-col items-center py-6 pr-px" style="border-color: var(--theme-border);">
+                        <span class="font-serif italic text-[28px] leading-[28px] text-[#5a5444]">${num}</span>
+                        <div class="mt-3 w-[2px] h-[79px] min-h-[40px] bg-[#191710] relative overflow-hidden shrink-0">
+                            ${barInner}
+                        </div>
+                    </div>
+                    <div class="relative px-6 sm:pl-6 sm:pr-8 pt-6 pb-5 cursor-pointer group" onclick="selectPost(posts.find(p => p.id === ${post.id}))">
+                        <div class="flex items-center justify-between gap-4 mb-3">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-[rgba(200,169,110,0.15)] bg-[#211f15] font-sans text-[8px] text-[#a09880]">${post.author.avatar}</div>
+                                <span class="font-sans text-[10px] tracking-[0.5px] text-[#a09880] truncate">${post.author.name}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0 w-[72px] justify-end">
+                                <svg class="w-2.5 h-2.5 ${isUrgent ? "text-[#c04038]" : "text-[#5a5444]"}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                                <span class="font-sans text-[9px] tracking-[1.08px] whitespace-nowrap ${isUrgent ? "text-[#c04038]" : "text-[#5a5444]"}">${timeRemaining}</span>
+                            </div>
+                        </div>
+                        <h2 class="font-serif text-[20px] leading-[24px] tracking-[-0.2px] text-[#f0ead8] mb-2 truncate">${post.title}</h2>
+                        <p class="font-sans text-[11px] leading-[19.8px] tracking-[0.22px] text-[#a09880] h-5 overflow-hidden text-ellipsis whitespace-nowrap mb-4">${excerpt}</p>
+                        <div class="flex items-center justify-between gap-4 pr-1">
+                            <div class="flex items-center gap-4">
+                                <button type="button" onclick="likePost(${post.id}, event)" class="focus-ring flex items-center gap-1.5 ${isLiked ? "text-[#c8a96e]" : "text-[#5a5444]"} hover:text-[#c8a96e] transition-colors">
+                                    <svg class="w-3 h-3" fill="${heartFill}" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                                    <span class="font-sans text-[10px]">${post.likes + (isLiked ? 1 : 0)}</span>
+                                </button>
+                                <span class="font-sans text-[9px] tracking-[1.08px] text-[#5a5444]">${post.readingTime} min read</span>
+                            </div>
+                            <span class="font-sans text-[9px] uppercase tracking-[1.35px] text-[#c8a96e] opacity-0 group-hover:opacity-100 transition-opacity hidden sm:inline">Read →</span>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function FilterTabsBar() {
+            const tabs = [
+                { id: "all", label: "All" },
+                { id: "trending", label: "Trending" },
+                { id: "recent", label: "New" },
+                { id: "expiring", label: "Expiring Soon" }
+            ];
+            return `
+                <div class="hidden lg:flex flex-wrap items-center gap-0 border-b border-figma min-h-[72px] px-6 sm:pl-[100px] sm:pr-10" style="border-color: var(--theme-border);">
+                    <div class="flex flex-wrap gap-0">
+                        ${tabs.map((tab) => `
+                            <button type="button" onclick="setFilter('${tab.id}')" class="focus-ring px-[18px] pt-3 pb-[13px] font-sans text-[9px] uppercase tracking-[1.62px] transition-colors ${filter === tab.id ? "tab-active" : "tab-inactive"}">${tab.label}</button>
+                        `).join("")}
+                    </div>
+                    <div class="ml-auto w-full sm:w-auto mt-4 sm:mt-0 pl-0 sm:pl-4 pb-3 sm:pb-0">
+                        <label class="relative block w-full sm:w-[180px]">
+                            <span class="sr-only">Search stories</span>
+                            <svg class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-[#5a5444]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+                            <input id="ephemeral-search-desktop" type="text" value="${searchQuery}" oninput="setSearchQuery(this.value)" placeholder="Search..." class="focus-ring w-full border border-figma rounded-none pl-9 pr-3 py-1.5 font-sans text-[10px] tracking-[0.4px] text-[#5a5444] placeholder:text-[#5a5444] bg-transparent" style="border-color: var(--theme-border);">
+                        </label>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setFilter(newFilter) {
+            filter = newFilter;
+            persistState();
+            render();
+        }
+
+        function setSearchQuery(query) {
+            searchQuery = query;
+            persistState();
+            render();
+        }
+
+        function getFilteredPosts() {
+            let filtered = [...posts];
+            
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                filtered = filtered.filter(p => 
+                    p.title.toLowerCase().includes(q) || 
+                    p.content.toLowerCase().includes(q) ||
+                    p.author.name.toLowerCase().includes(q)
+                );
+            }
+            
+            switch(filter) {
+                case 'trending':
+                    filtered.sort((a, b) => b.likes - a.likes);
+                    break;
+                case 'recent':
+                    filtered.sort((a, b) => b.createdAt - a.createdAt);
+                    break;
+                case 'expiring':
+                    filtered.sort((a, b) => a.expiresAt - b.expiresAt);
+                    break;
+            }
+            
+            return filtered;
+        }
+
+        function ProfileView() {
+            const me = authors[0];
+            const myStories = posts.filter((p) => p.author.id === me.id);
+            const storyCount = myStories.length;
+            const likesReceived = myStories.reduce((s, p) => s + p.likes, 0);
+            const likesGiven = likedPosts.size;
+            const safeName = escapeHtml(me.name);
+            const safeHandle = escapeHtml(me.handle);
+
+            return `
+                <div class="min-h-screen bg-[#0a0907] pt-[calc(52px+env(safe-area-inset-top,0px))] lg:pt-[calc(3.5rem+env(safe-area-inset-top,0px))] pb-[calc(60px+env(safe-area-inset-bottom,0px)+12px)] lg:pb-10">
+                    <div class="mx-auto max-w-lg px-6 lg:px-8">
+                        <button type="button" onclick="navigate('home')" class="focus-ring mb-6 font-sans text-[9px] uppercase tracking-[1.62px] text-[#5a5444] transition-colors hover:text-[#f0ead8] lg:hidden">
+                            ← Back to feed
+                        </button>
+                        <div class="border-b border-figma lg:mt-4 pb-8 text-center" style="border-color: var(--theme-border);">
+                            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-[32px] border border-[rgba(200,169,110,0.15)] bg-[#201e14] font-sans text-[20px] text-[#c8a96e]">${me.avatar}</div>
+                            <h1 class="mt-4 font-serif text-[28px] leading-tight text-[#f0ead8]">${safeName}</h1>
+                            <p class="mt-1 font-sans text-[11px] text-[#5a5444]">${safeHandle}</p>
+                            <p class="mx-auto mt-4 max-w-[320px] font-sans text-[11px] leading-[18px] text-[#a09880]">
+                                You publish as this identity on Ephemeral. Stories appear on the feed until their clock runs out—nothing archived, nothing permanent.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 border-b border-figma py-8 sm:gap-6" style="border-color: var(--theme-border);">
+                            <div class="text-center">
+                                <div class="font-serif text-[26px] leading-none text-[#f0ead8] sm:text-[28px]">${storyCount}</div>
+                                <div class="mt-2 font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Stories</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-serif text-[26px] leading-none text-[#f0ead8] sm:text-[28px]">${likesReceived}</div>
+                                <div class="mt-2 font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Appreciations</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-serif text-[26px] leading-none text-[#f0ead8] sm:text-[28px]">${likesGiven}</div>
+                                <div class="mt-2 font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Liked</div>
+                            </div>
+                        </div>
+                        <p class="pt-6 text-center font-sans text-[9px] uppercase tracking-[1.2px] text-[#5a5444]">Active theme · ${currentTheme.name}</p>
+                    </div>
+                    ${MobileBottomNav()}
+                </div>
+            `;
+        }
+
+        function HomeView() {
+            const filteredPosts = getFilteredPosts();
+            const soonestId = filteredPosts.length
+                ? filteredPosts.reduce((a, b) => (a.expiresAt < b.expiresAt ? a : b)).id
+                : null;
+
+            const emptyState = `
+                <div class="text-center py-20 px-6">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-[#191710] border border-figma" style="border-color: var(--theme-border);">
+                        <svg class="w-8 h-8 text-[#5a5444]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-xl mb-2 text-[#f0ead8]">No stories found</h3>
+                    <p class="text-[#a09880] text-sm">Try a different search or be the first to write.</p>
+                </div>
+            `;
+
+            return `
+                <div class="min-h-screen bg-[#0a0907] pt-[calc(52px+env(safe-area-inset-top,0px))] lg:pt-[calc(3.5rem+env(safe-area-inset-top,0px))] pb-[calc(60px+env(safe-area-inset-bottom,0px)+12px)] lg:pb-0">
+                    <div class="hidden lg:block">
+                        ${HeroSection()}
+                        ${MarqueeStrip()}
+                    </div>
+                    <div class="lg:hidden">
+                        ${MobileHeroSection()}
+                        ${MobileSearchFilters()}
+                        ${MobileThemeCard()}
+                    </div>
+                    <div class="max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-stretch">
+                        <div class="flex-1 min-w-0 flex flex-col border-figma lg:border-r" style="border-color: var(--theme-border);">
+                            ${FilterTabsBar()}
+                            <div class="flex flex-col">
+                                ${filteredPosts.length === 0 ? emptyState : `
+                                    <div class="lg:hidden">${filteredPosts.map((post, i) => StoryRowMobile(post, soonestId, i === filteredPosts.length - 1)).join("")}</div>
+                                    <div class="hidden lg:block">${filteredPosts.map((post, i) => StoryRow(post, i, null, soonestId)).join("")}</div>
+                                `}
+                            </div>
+                        </div>
+                        ${HomeSidebar()}
+                    </div>
+                    ${MobileBottomNav()}
+                </div>
+            `;
+        }
+
+        function PostDetailView() {
+            if (!selectedPost) return "";
+
+            const isLiked = likedPosts.has(selectedPost.id);
+            const likeCount = selectedPost.likes + (isLiked ? 1 : 0);
+            const fadeCompact = formatTimeCompact(selectedPost.expiresAt);
+            const totalMs = Math.max(1, selectedPost.expiresAt - selectedPost.createdAt);
+            const remainingMs = Math.max(0, selectedPost.expiresAt - Date.now());
+            const remainingPct = Math.max(0, Math.min(100, (remainingMs / totalMs) * 100));
+            const hoursShort = formatHoursRemainingShort(selectedPost.expiresAt);
+            const titleLines = splitTitleTwoLines(selectedPost.title);
+            const bodyHtmlDesktop = renderPostBodyWithDropCap(selectedPost.content, "desktop");
+            const bodyHtmlMobile = renderPostBodyWithDropCap(selectedPost.content, "mobile");
+            const readMin =
+                selectedPost.readingTime ??
+                Math.max(1, Math.ceil(selectedPost.content.split(/\s+/).filter((w) => w.length).length / 200));
+            const safeTitle1 = escapeHtml(titleLines.line1);
+            const safeTitle2 = escapeHtml(titleLines.line2);
+            const safeAuthorName = escapeHtml(selectedPost.author.name);
+            const safeAuthorHandle = escapeHtml(selectedPost.author.handle);
+
+            const likeBtnClass = isLiked ? "text-[#c8a96e]" : "text-[#a09880] hover:text-[#c8a96e]";
+
+            return `
+                <div class="min-h-screen bg-[#0a0907] pt-[calc(52px+env(safe-area-inset-top,0px))] lg:pt-[calc(3.5rem+env(safe-area-inset-top,0px))]">
+                    <div class="lg:hidden pb-[calc(120px+env(safe-area-inset-bottom,0px))]">
+                        <section class="border-b border-figma px-[27px] pb-0 pt-5" style="border-color: var(--theme-border);">
+                            <button type="button" onclick="navigate('home')" class="focus-ring flex items-center gap-1 font-sans text-[9px] font-medium uppercase tracking-[1.62px] text-[#5a5444] hover:text-[#f0ead8] transition-colors">
+                                <span aria-hidden="true">←</span>
+                                <span>Back</span>
+                            </button>
+                            <p class="mt-6 font-sans text-[8px] uppercase tracking-[1.8px] text-[#c8a96e]">${currentTheme.name} · ${currentTheme.season}</p>
+                            <h1 class="mt-2 font-serif text-[30px] leading-[1.05] tracking-[-0.6px] text-[#f0ead8]">
+                                <span class="block">${safeTitle1}</span>
+                                ${safeTitle2 ? `<span class="block">${safeTitle2}</span>` : ""}
+                            </h1>
+                            <div class="mt-4 flex items-center gap-2.5">
+                                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[16px] border border-[rgba(200,169,110,0.15)] bg-[#201e14] font-sans text-[10px] text-[#a09880]">${selectedPost.author.avatar}</div>
+                                <div class="min-w-0">
+                                    <div class="font-sans text-[12px] text-[#f0ead8]">${safeAuthorName}</div>
+                                    <div class="font-sans text-[10px] text-[#5a5444]">${safeAuthorHandle}</div>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex h-[55px] items-stretch border-t border-figma" style="border-color: var(--theme-border);">
+                                <div class="flex flex-1 flex-col items-center justify-center border-r border-figma" style="border-color: var(--theme-border);">
+                                    <span class="font-serif text-[28px] leading-none text-[#f0ead8]">${likeCount}</span>
+                                    <span class="mt-1 font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Likes</span>
+                                </div>
+                                <div class="flex flex-1 flex-col items-center justify-center border-r border-figma" style="border-color: var(--theme-border);">
+                                    <span class="font-serif text-[28px] leading-none text-[#f0ead8]">${hoursShort}</span>
+                                    <span class="mt-1 font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Remaining</span>
+                                </div>
+                                <div class="flex flex-1 flex-col items-center justify-center">
+                                    <span class="font-serif text-[28px] leading-none text-[#f0ead8]">${readMin}m</span>
+                                    <span class="mt-1 font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Read</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <article class="px-[27px] pb-6 pt-6">
+                            <div class="post-article-body">${bodyHtmlMobile}</div>
+                            <aside class="mt-9 border-l-2 border-[rgba(200,169,110,0.3)] bg-[#181610] pl-[18px] pr-4 pb-3 pt-2">
+                                <p class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#c8a96e]">On Impermanence</p>
+                                <p class="mt-1.5 font-sans text-[10px] leading-[18px] text-[#5a5444]">
+                                    This story will be permanently removed once the countdown ends. No archives. No backups.
+                                </p>
+                            </aside>
+                        </article>
+
+                        <div class="fixed bottom-[60px] left-0 right-0 z-40 border-t border-figma bg-[rgba(10,9,7,0.98)] backdrop-blur-sm" style="border-color: var(--theme-border);">
+                            <div class="flex items-center justify-between gap-4 px-[19px] py-[10px]">
+                                <button type="button" onclick="likePost(${selectedPost.id}, event)" class="focus-ring shrink-0 border border-[rgba(200,169,110,0.15)] px-[19px] py-[10px] font-sans text-[9px] uppercase tracking-[1.08px] transition-colors ${likeBtnClass}">
+                                    <span aria-hidden="true">♡   ${likeCount} Likes</span>
+                                    <span class="sr-only">${isLiked ? "Unlike" : "Like"}, ${likeCount} likes</span>
+                                </button>
+                                <p class="font-sans text-[9px] tracking-[0.9px] text-[#5a5444]">Fades in ${hoursShort}</p>
+                            </div>
+                        </div>
+                        ${MobileBottomNav()}
+                    </div>
+
+                    <div class="hidden lg:block">
+                        <section class="relative border-b border-figma px-6 pb-12 pt-10 lg:px-[100px] lg:pb-[37px] lg:pt-10" style="border-color: var(--theme-border);">
+                            <button type="button" onclick="navigate('home')" class="focus-ring flex items-center gap-1.5 font-sans text-[9px] uppercase tracking-[1.62px] text-[#5a5444] hover:text-[#f0ead8] transition-colors">
+                                <span aria-hidden="true">←</span>
+                                <span>Back to Stories</span>
+                            </button>
+                            <div class="mt-8 grid grid-cols-1 gap-10 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-end lg:gap-12">
+                                <div class="flex min-w-0 flex-col gap-3.5">
+                                    <p class="font-sans text-[9px] uppercase tracking-[1.8px] text-[#c8a96e]">${currentTheme.name} · ${currentTheme.season}</p>
+                                    <h1 class="font-serif text-[40px] leading-[1.02] tracking-[-0.8px] text-[#f0ead8] sm:text-[48px] lg:text-[56px] lg:leading-[57.12px] lg:tracking-[-1.12px]">
+                                        <span class="block">${safeTitle1}</span>
+                                        ${safeTitle2 ? `<span class="block">${safeTitle2}</span>` : ""}
+                                    </h1>
+                                    <div class="flex items-center gap-3 pt-2">
+                                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] border border-[rgba(200,169,110,0.15)] bg-[#201e14] font-sans text-[11px] text-[#a09880]">${selectedPost.author.avatar}</div>
+                                        <div class="min-w-0">
+                                            <div class="font-sans text-[12px] text-[#f0ead8]">${safeAuthorName}</div>
+                                            <div class="font-sans text-[10px] text-[#5a5444]">${safeAuthorHandle}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex w-full flex-col items-stretch gap-[18px] lg:items-end lg:gap-[18px]">
+                                    <div class="flex w-full flex-row justify-between gap-8 lg:w-auto lg:flex-col lg:items-end lg:gap-[18px]">
+                                        <div class="flex flex-col items-start gap-0.5 lg:items-end">
+                                            <span class="font-serif text-[32px] leading-[36px] text-[#f0ead8] lg:text-[36px]">${likeCount}</span>
+                                            <span class="font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Appreciations</span>
+                                        </div>
+                                        <div class="flex flex-col items-end gap-0.5">
+                                            <span class="font-serif text-[32px] leading-[36px] text-[#f0ead8] lg:text-[36px]">${hoursShort}</span>
+                                            <span class="font-sans text-[8px] uppercase tracking-[1.44px] text-[#5a5444]">Remaining</span>
+                                        </div>
+                                    </div>
+                                    <div class="relative h-0.5 w-full overflow-hidden rounded-sm bg-[#181610] lg:max-w-[300px]">
+                                        <div class="absolute inset-y-0 left-0 rounded-sm bg-gradient-to-r from-[#c8a96e] to-[#e8c98e]" style="width: ${remainingPct}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pointer-events-none absolute bottom-0 left-6 right-6 h-[2px] bg-gradient-to-r from-[rgba(200,169,110,0.3)] to-transparent lg:left-[60px] lg:right-[60px]" aria-hidden="true"></div>
+                        </section>
+
+                        <article class="mx-auto max-w-[780px] px-6 py-10 lg:px-0 lg:py-12">
+                            <div class="post-article-body">${bodyHtmlDesktop}</div>
+                            <div class="mt-8 flex flex-col gap-2 border-t border-figma pt-7 sm:flex-row sm:items-center sm:justify-between" style="border-color: var(--theme-border);">
+                                <button type="button" onclick="likePost(${selectedPost.id}, event)" class="focus-ring flex w-fit shrink-0 items-center border border-[rgba(200,169,110,0.15)] px-[25px] py-[13px] font-sans text-[10px] uppercase tracking-[1.5px] transition-colors ${isLiked ? "text-[#c8a96e]" : "text-[#a09880] hover:text-[#c8a96e]"}">
+                                    <span class="whitespace-pre" aria-hidden="true">♡  ${likeCount} Appreciations</span>
+                                    <span class="sr-only">${isLiked ? "Unlike" : "Like"}, ${likeCount} appreciations</span>
+                                </button>
+                                <p class="font-sans text-[9px] tracking-[0.9px] text-[#5a5444] sm:text-right">Fades in ${fadeCompact}</p>
+                            </div>
+                            <aside class="mt-8 border-l-2 border-[rgba(200,169,110,0.3)] bg-[#181610] pl-[22px] pr-5 pb-4 pt-2">
+                                <p class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#c8a96e]">On Impermanence</p>
+                                <p class="mt-1.5 font-sans text-[10px] leading-[18px] text-[#5a5444]">
+                                    <span class="block">This story exists only until the countdown ends. Once gone, it will be permanently removed from our</span>
+                                    <span class="block">servers. No archives. No backups. Only the memory of those who chose to read it now.</span>
+                                </p>
+                            </aside>
+                        </article>
+                    </div>
+                </div>
+            `;
+        }
+
+        function WriteView() {
+            const wordCount = newPost.content.split(/\s+/).filter((w) => w.length > 0).length;
+            const minRead = Math.max(0, Math.ceil(wordCount / 200));
+            const canPublish = newPost.title.trim() && newPost.content.trim();
+            const themeBlurb = currentTheme.writeBlurb || "Share something honest before\nthe clock runs out.";
+            const themeBlurbLines = themeBlurb.split("\n").filter(Boolean);
+            const durationRowsDesktop = [
+                [12, "12 hours", "Fleeting"],
+                [24, "24 hours", "Standard"],
+                [48, "48 hours", "Extended"]
+            ];
+            const durationOptions = durationRowsDesktop
+                .map(([hours, label, tag]) => {
+                    const on = newPost.duration === hours;
+                    const rowCls = on
+                        ? "border border-solid border-[#c8a96e] bg-[rgba(200,169,110,0.12)]"
+                        : "border border-solid border-[rgba(200,169,110,0.08)] bg-transparent";
+                    const mainCls = on ? "text-[#c8a96e]" : "text-[#a09880]";
+                    const subCls = on ? "text-[#c8a96e]" : "text-[#a09880]";
+                    return `
+                        <button type="button" onclick="setDuration(${hours})" class="focus-ring flex w-full items-center justify-between px-[15px] py-[11px] transition-colors ${rowCls}">
+                            <span class="font-sans text-[10px] tracking-[0.6px] ${mainCls}">${label}</span>
+                            <span class="font-sans text-[8px] tracking-[0.6px] opacity-60 ${subCls}">${tag}</span>
+                        </button>
+                    `;
+                })
+                .join("");
+
+            const durationRowsMobile = [
+                [12, "12h", "Fleeting"],
+                [24, "24h", "Standard"],
+                [48, "48h", "Extended"]
+            ];
+            const durationOptionsMobile = durationRowsMobile
+                .map(([hours, main, sub]) => {
+                    const on = newPost.duration === hours;
+                    const rowCls = on
+                        ? "border border-solid border-[#c8a96e] bg-[rgba(200,169,110,0.12)]"
+                        : "border border-solid border-[rgba(200,169,110,0.08)] bg-transparent";
+                    const mainCls = on ? "text-[#c8a96e]" : "text-[#a09880]";
+                    const subCls = on ? "text-[#c8a96e]" : "text-[#a09880]";
+                    return `
+                        <button type="button" onclick="setDuration(${hours})" class="focus-ring flex min-h-0 min-w-0 flex-1 flex-col items-center px-[7px] py-[11px] transition-colors ${rowCls}">
+                            <span class="font-sans text-[10px] tracking-[0.4px] ${mainCls}">${main}</span>
+                            <span class="mt-[3px] font-sans text-[8px] tracking-[0.48px] opacity-60 ${subCls}">${sub}</span>
+                        </button>
+                    `;
+                })
+                .join("");
+
+            const publishBtnClass = canPublish
+                ? "cursor-pointer opacity-100 hover:opacity-90"
+                : "cursor-not-allowed opacity-40";
+
+            const writeSidebar = `
+                <aside class="flex w-full flex-col gap-8 bg-[#111009] px-8 py-12 lg:w-[356px] lg:max-w-[356px] lg:shrink-0 lg:self-stretch">
+                    <div class="flex min-h-[90px] flex-col">
+                        <p class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Current Theme</p>
+                        <p class="mt-6 font-serif text-[18px] italic leading-normal text-[#c8a96e]">${currentTheme.name}</p>
+                        <p class="mt-2 font-sans text-[10px] leading-[18px] text-[#5a5444]">
+                            ${themeBlurbLines.map((line) => `<span class="block">${line}</span>`).join("")}
+                        </p>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <p class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Visibility Duration</p>
+                        <div class="flex flex-col gap-2">${durationOptions}</div>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <p class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Publishing As</p>
+                        <div class="flex items-center gap-[10px] border-t border-b border-[rgba(200,169,110,0.08)] pt-[13px] pb-[17px]">
+                            <div class="flex size-[34px] shrink-0 items-center justify-center rounded-[17px] border border-[rgba(200,169,110,0.15)] bg-[#201e14] font-sans text-[10px] text-[#a09880]">${authors[0].avatar}</div>
+                            <div class="min-w-0">
+                                <p class="font-sans text-[11px] text-[#f0ead8]">${authors[0].name}</p>
+                                <p class="font-sans text-[9px] text-[#5a5444]">${authors[0].handle}</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="${canPublish ? "publishPost()" : ""}" ${canPublish ? "" : "disabled"} class="focus-ring w-full bg-[#c8a96e] px-3 pb-[10px] pt-3 font-sans text-[10px] uppercase tracking-[2px] text-[#0a0907] transition-opacity ${canPublish ? "hover:opacity-90" : "cursor-not-allowed opacity-40"}">
+                            Publish Story
+                        </button>
+                        <p class="text-center font-sans text-[9px] tracking-[0.72px] text-[#5a5444]">Add title and content to publish</p>
+                    </div>
+                </aside>
+            `;
+
+            return `
+                <div class="write-shell relative min-h-screen bg-[#0a0907]">
+                    <div class="lg:hidden">
+                        <div class="fixed left-0 right-0 top-0 z-40 pt-[env(safe-area-inset-top,0px)]">
+                            <div class="flex h-[52px] items-center justify-between border-b border-[rgba(200,169,110,0.08)] bg-[rgba(10,9,7,0.96)] px-[27px] pb-px">
+                                <h1 class="font-serif text-[20px] italic leading-normal text-[#f0ead8]">New Story</h1>
+                                <button type="button" onclick="navigate('home')" class="focus-ring font-sans text-[9px] uppercase tracking-[1.44px] text-[#5a5444] transition-colors hover:text-[#f0ead8]">Cancel</button>
+                            </div>
+                        </div>
+                        <div class="relative pb-[calc(125px+env(safe-area-inset-bottom,0px))] pt-[calc(52px+env(safe-area-inset-top,0px))]">
+                            <div class="flex flex-col gap-[9px] px-[27px] pb-5 pt-6">
+                                <label for="write-title-mobile" class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Title</label>
+                                <div class="border-b border-[rgba(200,169,110,0.08)] pb-[11px]">
+                                    <input id="write-title-mobile" type="text" value="${escapeHtml(newPost.title)}" oninput="updatePostTitle(this.value)" placeholder="Give your story a name…" class="write-title-input w-full bg-transparent p-0 font-serif text-[24px] leading-normal text-[#f0ead8] placeholder:text-[#5a5444]" autocomplete="off" />
+                                </div>
+                                <div class="pt-[19px]">
+                                    <label for="write-body-mobile" class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Your Story</label>
+                                    <div class="pt-[3px]">
+                                        <textarea id="write-body-mobile" oninput="updatePostContent(this.value)" placeholder="Write something that matters… This will disappear. Make it count." class="write-body-input h-[137px] min-h-[137px] w-full resize-y bg-transparent font-sans text-[12px] leading-[25.2px] text-[#f0ead8] placeholder:text-[#5a5444]"></textarea>
+                                        <p class="mt-1 text-right font-sans text-[9px] tracking-[0.54px] text-[#5a5444]">${wordCount} words</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ml-6 mr-5 h-px bg-[rgba(200,169,110,0.08)]" aria-hidden="true"></div>
+                            <div class="flex flex-col gap-[10px] px-[27px] pb-5 pt-4">
+                                <p class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Duration</p>
+                                <div class="flex gap-2">${durationOptionsMobile}</div>
+                            </div>
+                            <div class="ml-6 mr-5 h-px bg-[rgba(200,169,110,0.08)]" aria-hidden="true"></div>
+                            <div class="flex min-h-0 flex-col gap-3 pl-[27px] pr-5 pb-4 pt-8">
+                                <p class="font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Publishing As</p>
+                                <div class="flex items-center gap-[10px] border-t border-b border-[rgba(200,169,110,0.08)] py-[13px]">
+                                    <div class="flex size-8 shrink-0 items-center justify-center rounded-[16px] border border-[rgba(200,169,110,0.15)] bg-[#201e14] font-sans text-[10px] text-[#a09880]">${authors[0].avatar}</div>
+                                    <div class="min-w-0">
+                                        <p class="font-sans text-[11px] text-[#f0ead8]">${authors[0].name}</p>
+                                        <p class="font-sans text-[9px] text-[#5a5444]">${authors[0].handle}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fixed bottom-[63px] left-0 right-0 z-40 border-t border-[rgba(200,169,110,0.08)] bg-[rgba(10,9,7,0.97)] px-[27px] pb-[20px] pt-[11px]">
+                            <button type="button" onclick="${canPublish ? "publishPost()" : ""}" ${canPublish ? "" : "disabled"} class="focus-ring w-full bg-[#c8a96e] p-3 font-sans text-[10px] uppercase tracking-[2px] text-[#0a0907] transition-opacity ${publishBtnClass}">
+                                Publish Story
+                            </button>
+                        </div>
+                        ${MobileBottomNav()}
+                    </div>
+
+                    <div class="relative hidden min-h-screen lg:block lg:pt-[calc(3.5rem+env(safe-area-inset-top,0px))]">
+                        <div class="pointer-events-none absolute inset-0 z-0 write-gradient-bg" aria-hidden="true"></div>
+                        <div class="relative z-10 mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_356px]">
+                            <div class="flex min-w-0 flex-col border-figma px-6 pb-16 pt-10 lg:border-r lg:px-[60px] lg:pb-12 lg:pt-12" style="border-color: rgba(200, 169, 110, 0.08);">
+                                <div class="flex items-baseline justify-between gap-6">
+                                    <h2 class="font-serif text-[28px] italic leading-normal text-[#f0ead8]">Write Your Story</h2>
+                                    <button type="button" onclick="navigate('home')" class="focus-ring shrink-0 font-sans text-[9px] uppercase tracking-[1.62px] text-[#5a5444] transition-colors hover:text-[#f0ead8]">Cancel</button>
+                                </div>
+                                <div class="mt-[53px]">
+                                    <label for="write-title-desktop" class="block font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Title</label>
+                                    <div class="mt-[14px] border-b border-[rgba(200,169,110,0.08)] pb-[13px]">
+                                        <input id="write-title-desktop" type="text" value="${escapeHtml(newPost.title)}" oninput="updatePostTitle(this.value)" placeholder="Give your story a name…" class="write-title-input w-full bg-transparent p-0 font-serif text-[32px] leading-normal text-[#f0ead8] placeholder:text-[#5a5444]" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="mt-12 lg:mt-[48px]">
+                                    <label for="write-body-desktop" class="block font-sans text-[8px] uppercase tracking-[1.76px] text-[#5a5444]">Your Story</label>
+                                    <div class="mt-[21px] flex min-h-[300px] flex-col">
+                                        <textarea id="write-body-desktop" oninput="updatePostContent(this.value)" placeholder="Write something that matters… This will disappear. Make it count." class="write-body-input min-h-[300px] w-full flex-1 resize-y bg-transparent font-sans text-[13px] leading-[27.3px] tracking-[0.26px] text-[#f0ead8] placeholder:text-[#5a5444]"></textarea>
+                                        <p class="mt-4 text-right font-sans text-[10px] text-[#5a5444] lg:mt-6">${wordCount} words · ~${minRead} min read</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-t border-figma lg:border-t-0" style="border-color: rgba(200, 169, 110, 0.08);">
+                                ${writeSidebar}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updatePostTitle(title) {
+            newPost.title = title;
+            persistState();
+            render();
+        }
+
+        function updatePostContent(content) {
+            newPost.content = content;
+            persistState();
+            render();
+        }
+
+        function setDuration(hours) {
+            newPost.duration = hours;
+            persistState();
+            render();
+        }
+
+        function captureInputFocusState() {
+            const el = document.activeElement;
+            if (!el || (el.tagName !== "INPUT" && el.tagName !== "TEXTAREA")) return null;
+            if (!el.id) return null;
+            const state = { id: el.id };
+            if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
+                state.start = el.selectionStart;
+                state.end = el.selectionEnd;
+            }
+            return state;
+        }
+
+        function restoreInputFocusState(state) {
+            if (!state || !state.id) return;
+            const el = document.getElementById(state.id);
+            if (!el || (el.tagName !== "INPUT" && el.tagName !== "TEXTAREA")) return;
+            el.focus();
+            if (typeof state.start === "number" && typeof state.end === "number" && typeof el.setSelectionRange === "function") {
+                try {
+                    const n = el.value.length;
+                    const a = Math.max(0, Math.min(state.start, n));
+                    const b = Math.max(0, Math.min(state.end, n));
+                    el.setSelectionRange(a, b);
+                } catch (_) {}
+            }
+        }
+
+        function render() {
+            const focusState = captureInputFocusState();
+            const app = document.getElementById('app');
+            
+            let content = '';
+            switch(currentView) {
+                case 'home':
+                    content = HomeView();
+                    break;
+                case 'post':
+                    content = PostDetailView();
+                    break;
+                case 'write':
+                    content = WriteView();
+                    break;
+                case 'profile':
+                    content = ProfileView();
+                    break;
+            }
+            
+            app.innerHTML = Header() + content;
+
+            if (currentView === 'write') {
+                document.querySelectorAll('.write-title-input').forEach((el) => {
+                    el.value = newPost.title;
+                });
+                document.querySelectorAll('.write-body-input').forEach((el) => {
+                    el.value = newPost.content;
+                });
+            }
+
+            restoreInputFocusState(focusState);
+        }
+
+        setTheme(currentTheme);
+        render();
+
+        setInterval(() => {
+            if (currentView === 'home' || currentView === 'post') {
+                render();
+            }
+        }, 60000);
+    </script>
+</body>
+</html>
